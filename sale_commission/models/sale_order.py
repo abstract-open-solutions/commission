@@ -43,7 +43,8 @@ class SaleOrder(models.Model):
     def _get_agents_name(self):
         names = []
         for line in self.order_line:
-            names.append(line.agents_name)
+            if line.agents_name not in names:
+                names.append(line.agents_name)
         self.agents = '\n'.join(names)
 
 
