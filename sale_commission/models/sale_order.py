@@ -36,6 +36,15 @@ class SaleOrder(models.Model):
     commission_total = fields.Float(
         string="Commissions", compute="_get_commission_total",
         store=True)
+    agents = fields.Char('Agents', compute='_get_agents_name')
+
+    @api.one
+    @api.depends('order_line.agents_name')
+    def _get_agents_name(self):
+        names = []
+        for line in self.order_line:
+            names.append(line.agents_name)
+        self.agents = '\n'.join(names)
 
 
 class SaleOrderLine(models.Model):

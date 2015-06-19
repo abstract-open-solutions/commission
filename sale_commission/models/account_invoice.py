@@ -40,6 +40,15 @@ class AccountInvoice(models.Model):
     commission_total = fields.Float(
         string="Commissions", compute="_get_commission_total",
         store=True)
+    agents = fields.Char('Agents', compute='_get_agents_name')
+
+    @api.one
+    @api.depends('invoice_line.agents_name')
+    def _get_agents_name(self):
+        names = []
+        for line in self.invoice_line:
+            names.append(line.agents_name)
+        self.agents = '\n'.join(names)
 
     @api.multi
     def action_cancel(self):
