@@ -88,9 +88,18 @@ class AccountInvoiceLine(models.Model):
         inverse_name="invoice_line", string="Agents & commissions",
         help="Agents/Commissions related to the invoice line.",
         default=_default_agents, copy=True)
+    agents_name = fields.Char('Agents', compute='_get_agents_name')
     commission_free = fields.Boolean(
         string="Comm. free", related="product_id.commission_free",
         store=True, readonly=True)
+
+    @api.one
+    @api.depends('agents')
+    def _get_agents_name(self):
+        names = []
+        for item in self.agents:
+            names.append(item.agent.name)
+        self.agents_name = '\n'.join(names)
 
 
 class AccountInvoiceLineAgent(models.Model):

@@ -56,9 +56,18 @@ class SaleOrderLine(models.Model):
         string="Agents & commissions",
         comodel_name='sale.order.line.agent', inverse_name='sale_line',
         copy=True, readonly=True, default=_default_agents)
+    agents_name = fields.Char('Agents', compute='_get_agents_name')
     commission_free = fields.Boolean(
         string="Comm. free", related="product_id.commission_free",
         store=True, readonly=True)
+
+    @api.one
+    @api.depends('agents')
+    def _get_agents_name(self):
+        names = []
+        for item in self.agents:
+            names.append(item.agent.name)
+        self.agents_name = '\n'.join(names)
 
     @api.model
     def _prepare_order_line_invoice_line(self, line, account_id=False):

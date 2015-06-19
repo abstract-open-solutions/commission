@@ -16,12 +16,11 @@
         <record id="invoice_line_form_agent" model="ir.ui.view">
             <field name="name">account.invoice.line.form.agent</field>
             <field name="model">account.invoice.line</field>
-            <field name="inherit_id" ref="account.view_invoice_line_form" />
+            <field name="inherit_id" ref="account.view_invoice_line_form"/>
             <field name="arch" type="xml">
                 <field name="company_id" position="after">
                     <field name="commission_free"/>
-                    <field name="agents"
-                           attrs="{'readonly': [('commission_free', '=', True)]}"/>
+                    <field name="agents"/>
                 </field>
             </field>
         </record>
@@ -31,13 +30,15 @@
             <field name="model">account.invoice</field>
             <field name="inherit_id" ref="account.invoice_form" />
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_line']/tree" position="attributes">
+                    <attribute name="editable"/>
+                </xpath>
                 <field name="invoice_line" position="attributes">
                     <attribute name="context">{'partner_id': partner_id}</attribute>
                 </field>
                 <xpath expr="//field[@name='invoice_line']/tree//field[@name='price_subtotal']" position="after">
                     <field name="commission_free"/>
-                    <field name="agents"
-                           attrs="{'readonly': [('commission_free', '=', True)]}"/>
+                    <field name="agents_name"/>
                 </xpath>
                 <field name="amount_total" position="after">
                     <field name="commission_total"
